@@ -5,7 +5,6 @@ if __name__ == "__main__":
     import alphashape
     import numpy as np
     import open3d as o3d
-    from shapely.geometry import Polygon, MultiPolygon
 
     # Step 1: 加载点云
     pcd = o3d.io.read_point_cloud(file_path)
@@ -16,4 +15,10 @@ if __name__ == "__main__":
     alpha_shape = alphashape.alphashape(points, alpha)
     alpha_shape.export(output_path)
 
+
+
+    # 读取并显示 Mesh
+    mesh = o3d.io.read_triangle_mesh(output_path)
+    mesh.compute_vertex_normals()
+    o3d.visualization.draw_geometries([mesh], window_name="Alpha Shape Mesh")
 

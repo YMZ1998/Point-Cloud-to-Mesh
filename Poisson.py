@@ -2,7 +2,7 @@ import numpy as np
 import open3d as o3d
 
 # 加载点云
-pcd = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\output.ply")
+pcd = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\output_mesh.ply")
 
 # 去除噪声点
 pcd, _ = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
@@ -12,7 +12,7 @@ pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=10
 pcd.orient_normals_consistent_tangent_plane(k=10)
 
 # 泊松重建
-mesh, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8)
+mesh, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=3)
 
 # # 根据密度裁剪
 # density_threshold = np.percentile(np.asarray(densities), 2)

@@ -78,23 +78,23 @@ def point_cloud_to_mesh_and_save(radius=1.0, num_points=5000, voxel_size=0.001, 
 
 
 # 运行并生成网格
-# point_cloud_to_mesh_and_save(radius=1.0, num_points=2000, voxel_size=0.1, output_file=output_path)
+point_cloud_to_mesh_and_save(radius=1.0, num_points=2000, voxel_size=0.1, output_file=output_path)
 
-import numpy as np
-import mcubes
-
-# Create a data volume (30 x 30 x 30)
-X, Y, Z = np.mgrid[:30, :30, :30]
-u = (X - 15) ** 2 + (Y - 15) ** 2 + (Z - 15) ** 2 - 8 ** 2
-print(u.shape)
-point_cloud = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\output.ply")
-points = np.asarray(point_cloud.points)
-print(points.shape)
-
-# Extract the 0-isosurface
-# vertices, triangles = mcubes.marching_cubes(u, 0)
-vertices, triangles, _, _ = measure.marching_cubes(u, level=0.05)
-
-# Export the result to sphere.dae
-mcubes.export_obj(vertices, triangles, "sphere.obj")
+# import numpy as np
+# import mcubes
+#
+# # Create a data volume (30 x 30 x 30)
+# X, Y, Z = np.mgrid[:30, :30, :30]
+# u = (X - 15) ** 2 + (Y - 15) ** 2 + (Z - 15) ** 2 - 8 ** 2
+# print(u.shape)
+# point_cloud = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\output.ply")
+# points = np.asarray(point_cloud.points)
+# print(points.shape)
+#
+# # Extract the 0-isosurface
+# # vertices, triangles = mcubes.marching_cubes(u, 0)
+# vertices, triangles, _, _ = measure.marching_cubes(u, level=0.05)
+#
+# # Export the result to sphere.dae
+# mcubes.export_obj(vertices, triangles, "sphere.obj")
 
