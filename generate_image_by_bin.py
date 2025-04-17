@@ -7,11 +7,6 @@ from PIL import Image
 IMAGE_WIDTH = 240
 IMAGE_HEIGHT = 200
 POINT_VALUE = 255  # 白点的灰度值
-SAVE_PATH = r"D:\Code\us_recon\data\test2"
-os.makedirs(SAVE_PATH, exist_ok=True)
-
-
-# 读取 BIN 文件中数据并按组划分
 def read_bin_in_groups(file_path, dtype=np.uint16, group_size=49, discard_size=2, num_groups=12):
     if not os.path.exists(file_path):
         print(f"文件不存在: {file_path}")
@@ -29,12 +24,10 @@ def read_bin_in_groups(file_path, dtype=np.uint16, group_size=49, discard_size=2
     return groups
 
 
-# 创建空白的8位图像
 def create_empty_bmp(width, height):
     return Image.new("L", (width, height), 0)  # 黑底
 
 
-# 在图像上绘制坐标点
 def draw_points_on_image(image, points, value=255):
     for x, y in points:
         if 0 <= x < image.width and 0 <= y < image.height:
@@ -43,7 +36,10 @@ def draw_points_on_image(image, points, value=255):
 
 # 主程序
 if __name__ == "__main__":
-    file_path = r"D:\Data\超声\20250207_82521\20250207\PATI000"
+    SAVE_PATH = r"D:\Code\us_recon\data\test4"
+    os.makedirs(SAVE_PATH, exist_ok=True)
+
+    file_path = r"D:\Data\超声\20250207_82521\20250207\PATI009"
     file_path_x = os.path.join(file_path, "BDX.BIN")
     file_path_y = os.path.join(file_path, "BDY.BIN")
 

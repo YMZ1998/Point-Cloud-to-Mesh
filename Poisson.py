@@ -2,7 +2,7 @@ import numpy as np
 import open3d as o3d
 
 # 加载点云
-pcd = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\output_mesh.ply")
+pcd = o3d.io.read_point_cloud(r"D:\Code\us_recon\data\test2.ply")
 
 # 去除噪声点
 pcd, _ = pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
