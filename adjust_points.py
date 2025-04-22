@@ -34,6 +34,8 @@ def adjust_spacing(sorted_points):
             t = (target_pos - distances[insert_idx - 1]) / (distances[insert_idx] - distances[insert_idx - 1])
             adjusted_points[i] = points[insert_idx - 1] + t * (points[insert_idx] - points[insert_idx - 1])
 
+    # print(len(adjusted_points))
+    # print(adjusted_points[-1], adjusted_points[-2])
     return adjusted_points.tolist()
 
 
@@ -41,10 +43,8 @@ def visualize_points(sorted_points, adjusted_points):
     sorted_points = np.array(sorted_points)
     adjusted_points = np.array(adjusted_points)
 
-    # 创建一个新的图形窗口
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6))  # 创建1行2列的子图
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
 
-    # 原始点的可视化
     axes[0].scatter(sorted_points[:, 0], sorted_points[:, 1], c='gray', label='Original Points')
     axes[0].plot(sorted_points[:, 0], sorted_points[:, 1], c='gray', linestyle='--', label='Original Path')
     axes[0].invert_yaxis()  # Y轴反转以匹配图像坐标系
@@ -53,7 +53,6 @@ def visualize_points(sorted_points, adjusted_points):
     axes[0].grid(True)
     axes[0].axis('equal')
 
-    # 调整后的点的可视化
     axes[1].scatter(adjusted_points[:, 0], adjusted_points[:, 1], c='blue', label='Adjusted Points')
     axes[1].plot(adjusted_points[:, 0], adjusted_points[:, 1], c='blue', linestyle='--', label='Adjusted Path')
     axes[1].invert_yaxis()  # Y轴反转以匹配图像坐标系
@@ -62,87 +61,43 @@ def visualize_points(sorted_points, adjusted_points):
     axes[1].grid(True)
     axes[1].axis('equal')
 
-    plt.tight_layout()  # 自动调整子图布局
+    plt.tight_layout()
     plt.show()
 
 
 def replace_first_last_with_average(points):
     new_points = []
 
-    # 初始化第一个和最后一个点，确保它们是float类型
     first_point = np.array(points[0][0], dtype=np.float64)
     middle_point = np.array(points[0][len(points[0]) // 2], dtype=np.float64)
-
-    print("first_point:", first_point)
-    print("middle_point:", middle_point)
 
     for group in points[1:]:
         first_point += np.array(group[0], dtype=np.float64)
         middle_point += np.array(group[len(group) // 2], dtype=np.float64)
 
-    # 计算平均值
     first_point = first_point / len(points)
     middle_point = middle_point / len(points)
 
-
-    print("first_point:", first_point)
-    print("middle_point:", middle_point)
+    # print("first_point:", first_point)
+    # print("middle_point:", middle_point)
 
     for group in points:
         group[0] = first_point.tolist()
         group[1] = first_point.tolist()
         group[-1] = first_point.tolist()
         group[len(group) // 2] = middle_point.tolist()
-        group[len(group) // 2-1] = middle_point.tolist()
-        group[len(group) // 2+1] = middle_point.tolist()
+        # group.pop(len(group) // 2+1)
+        # group.pop(len(group) // 2-1)
+        # group.pop(1)
 
-        print(group)
+        group[len(group) // 2 - 1] = middle_point.tolist()
+        group[len(group) // 2 + 1] = middle_point.tolist()
+
+        # print(group)
         new_points.append(group)
 
     return new_points
 
-
-def distance(p1, p2):
-    """计算两个点之间的欧几里得距离"""
-    return np.linalg.norm(np.array(p1) - np.array(p2))
-
-
-def merge_close_points(points, threshold=0.1):
-    new_points = []
-
-    for group in points:
-        new_group = [group[0]]  # 保持第一个点不变
-
-        # 遍历当前组内的点，比较相邻点的距离
-        for i in range(1, len(group) - 1):
-            p1 = group[i - 1]
-            p2 = group[i]
-            p3 = group[i + 1]
-
-            # 计算当前点与前一个点、下一个点的距离
-            dist1 = distance(p1, p2)
-            dist2 = distance(p2, p3)
-
-            print(dist1, dist2)
-
-            # 如果当前点与前一个点的距离小于阈值，将它们合并
-            if dist1 < threshold:
-                merged_point = (np.array(p1) + np.array(p2)) / 2
-                new_group[-1] = merged_point.tolist()  # 替换前一个点
-            else:
-                new_group.append(p2)
-
-            # 如果当前点与下一个点的距离小于阈值，将它们合并
-            if dist2 < threshold:
-                merged_point = (np.array(p2) + np.array(p3)) / 2
-                new_group[-1] = merged_point.tolist()  # 替换当前点
-            else:
-                new_group.append(p3)
-
-        new_group.append(group[-1])  # 保持最后一个点不变
-        new_points.append(new_group)
-
-    return new_points
 
 if __name__ == "__main__":
     points1 = [(119, 60), (121, 60), (124, 60), (116, 61), (130, 61), (110, 63), (133, 63), (107, 64), (104, 68),
@@ -166,11 +121,11 @@ if __name__ == "__main__":
         sorted_pts = sort_points(points)  # 先排序点
         adjusted_pts = adjust_spacing(sorted_pts)  # 调整间距
         # print(len(sorted_pts), len(adjusted_pts))
-        # visualize_points(sorted_pts, adjusted_pts)  # 可视化
+        visualize_points(sorted_pts, adjusted_pts)  # 可视化
         sorted_points_list.append(adjusted_pts)
 
-    print(sorted_points_list[0])
-    print(sorted_points_list[1])
-    replace_first_last_with_average(sorted_points_list)
-    print(sorted_points_list[0])
-    print(sorted_points_list[1])
+    # print(sorted_points_list[0])
+    # print(sorted_points_list[1])
+    # replace_first_last_with_average(sorted_points_list)
+    # print(sorted_points_list[0])
+    # print(sorted_points_list[1])

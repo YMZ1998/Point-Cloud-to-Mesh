@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def sort_points(points, center=None):
-    # print("开始排序点数:", len(points))
+    print("开始排序点数:", len(points))
     # print(points)
 
     if len(points) < 3:
@@ -16,7 +16,7 @@ def sort_points(points, center=None):
         center = np.mean(points, axis=0)
         center[0] = 120
 
-    print("计算得到的中心点:", center)
+    # print("计算得到的中心点:", center)
 
     # 计算每个点的相对坐标
     dx = points[:, 0] - center[0]
@@ -35,7 +35,7 @@ def sort_points(points, center=None):
     if abs(sorted_points[0][0] - 120) > abs(sorted_points[-1][0] - 120):
         sorted_points = [sorted_points[-1]] + sorted_points[:-1]
 
-    print(sorted_points[0], sorted_points[-1])
+    # print(sorted_points[0], sorted_points[-1])
     print("排序后的点集：", sorted_points)
 
     return sorted_points

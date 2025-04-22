@@ -3,11 +3,8 @@ import os
 import numpy as np
 from PIL import Image
 
-# 配置参数
-IMAGE_WIDTH = 240
-IMAGE_HEIGHT = 200
-POINT_VALUE = 255  # 白点的灰度值
-def read_bin_in_groups(file_path, dtype=np.uint16, group_size=49, discard_size=2, num_groups=12):
+
+def read_bin_in_groups(file_path, group_size=49, discard_size=2, num_groups=12, dtype=np.uint16):
     if not os.path.exists(file_path):
         print(f"文件不存在: {file_path}")
         return []
@@ -29,17 +26,22 @@ def create_empty_bmp(width, height):
 
 
 def draw_points_on_image(image, points, value=255):
+    print(len(points))
     for x, y in points:
         if 0 <= x < image.width and 0 <= y < image.height:
             image.putpixel((x, y), value)
 
 
-# 主程序
 if __name__ == "__main__":
-    SAVE_PATH = r"D:\Code\us_recon\data\test4"
+    # 配置参数
+    IMAGE_WIDTH = 240
+    IMAGE_HEIGHT = 200
+    POINT_VALUE = 255  # 白点的灰度值
+
+    SAVE_PATH = r"D:\Code\us_recon\data\test5"
     os.makedirs(SAVE_PATH, exist_ok=True)
 
-    file_path = r"D:\Data\超声\20250207_82521\20250207\PATI009"
+    file_path = r"D:\Data\超声\20250207_82521\20250207\PATI028"
     file_path_x = os.path.join(file_path, "BDX.BIN")
     file_path_y = os.path.join(file_path, "BDY.BIN")
 

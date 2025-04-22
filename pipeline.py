@@ -5,6 +5,7 @@ import open3d as o3d
 from PIL import Image
 
 from adjust_points import adjust_spacing, replace_first_last_with_average
+from mesh_subdivision import loop_subdivision_once
 from sorted_points import sort_points
 
 
@@ -96,6 +97,12 @@ def generate_mesh(all_rings_3d, output_path):
     mesh.triangles = o3d.utility.Vector3iVector(np.array(triangles))
     mesh.compute_vertex_normals()
 
+    # vis_mesh(mesh)
+
+    # mesh = mesh.subdivide_loop(number_of_iterations=1)
+    mesh = loop_subdivision_once(mesh)
+    print(f"Mesh has {len(mesh.vertices)} vertices and {len(mesh.triangles)} triangles.")
+
     # Save the mesh to file
     o3d.io.write_triangle_mesh(output_path, mesh)
     print(f"Mesh saved: {output_path}")
@@ -130,10 +137,7 @@ def test_case(case):
     ANGLE_STEP = 15
     PIXEL_SPACING = 0.04979  # mm per pixel
     IMAGE_WIDTH = 240
-    IMAGE_HEIGHT = 200
-
-    OUTPUT_PCD_PATH = os.path.join(DATA_PATH, f"{case}_output_points.ply")
-    OUTPUT_MESH_PATH = os.path.join(DATA_PATH, f"{case}.ply")
+    NUM_POINTS = 49
 
     all_rings_2d = []
     all_rings_3d = []
@@ -149,14 +153,17 @@ def test_case(case):
         center_x = IMAGE_WIDTH // 2
         points_2d = extract_2d_points(img)
 
-        if len(points_2d) < 10:
+        while len(points_2d) < NUM_POINTS:
+            points_2d.append(points_2d[-1])
+
+        if np.all(np.array(points_2d) == [0, 0]):
             print(f"No points found in image: {filename}")
             continue
 
         points_2d = sort_points(points_2d)
         points_2d = adjust_spacing(points_2d)
 
-        # from sorted_points import visualize_points
+        from sorted_points import visualize_points
         # visualize_points(points_2d)
 
         points_3d = [convert_to_3d(u, v, angle_deg, center_x, PIXEL_SPACING) for u, v in points_2d]
@@ -168,10 +175,9 @@ def test_case(case):
     all_rings_3d = replace_first_last_with_average(all_rings_3d)
 
     # Generate and save point cloud and mesh
-    # generate_point_cloud(all_rings_3d, OUTPUT_PCD_PATH)
-    generate_mesh(all_rings_3d, OUTPUT_MESH_PATH)
+    # generate_point_cloud(all_rings_3d, os.path.join(DATA_PATH, f"{case}_output_points.ply"))
+    generate_mesh(all_rings_3d, os.path.join(DATA_PATH, f"{case}.ply"))
 
 
 if __name__ == "__main__":
-    # test_case('test')
-    test_case('test2')
+    test_case('test5')
